@@ -2,49 +2,52 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+
+
+const organizationName = "fino-dev"
+const projectName = "fino-docs"
+const branch = "main"
+const repoUrl = `https://github.com/${organizationName}/${projectName}`
+const organizationUrl = `https://github.com/${organizationName}`
 
 const config: Config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: 'Fino',
+  tagline: 'Financial data analysis tools',
   favicon: 'img/favicon.ico',
-
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
-    v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    v4: true,
   },
-
-  // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
+  url: 'https://your-docusaurus-site.example.com', // TODO: production url of your site here
   baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
-
+  organizationName: organizationName,
+  projectName: projectName,
   onBrokenLinks: 'throw',
-
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: [
+      'en',
+      'ja',
+    ],
   },
-
   presets: [
     [
       'classic',
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: `${repoUrl}/edit/${branch}/`,
+          include: ['**/*.{md,mdx}', '**/_*.{md,mdx}'],
+          exclude: [
+              '**/*.test.{js,jsx,ts,tsx}',
+              '**/__tests__/**'
+          ]
         },
         blog: {
           showReadingTime: true,
@@ -52,10 +55,12 @@ const config: Config = {
             type: ['rss', 'atom'],
             xslt: true,
           },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: `${repoUrl}/edit/${branch}/blog`,
+          include: ['**/*.{md,mdx}', '**/_*.{md,mdx}'],
+          exclude: [
+              '**/*.test.{js,jsx,ts,tsx}',
+              '**/__tests__/**'
+          ],
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -70,28 +75,46 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/logo-fino.jpg',
+    metadata: [{ name: 'twitter:card', content: 'summary' }],
     colorMode: {
-      respectPrefersColorScheme: true,
-    },
+      defaultMode: 'dark',
+      disableSwitch: false,
+      respectPrefersColorScheme: true
+  },
     navbar: {
-      title: 'My Site',
+
       logo: {
-        alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        alt: 'Fino Logo',
+        src: 'img/logo-fino.svg',
+        srcDark: 'img/logo-fino.svg',
+        className: 'fino-navbar-logo-class',
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          type: 'doc',
+          docId: 'getting-started',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Getting Started',
+        },
+        {
+          type: 'doc',
+          docId: "docs",
+          position: 'left',
+          label: 'Docs',
+        },
+        {
+          type: 'doc',
+          docId: "contribute",
+          position: 'left',
+          label: 'Contribute',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
-          label: 'GitHub',
+          href: organizationUrl,
           position: 'right',
+          className: 'header-github-link',
+          'aria-label': 'GitHub repository',
         },
       ],
     },
@@ -99,11 +122,15 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Documentation',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'Getting Started',
+              to: '/docs/getting-started',
+            },
+            {
+              label: 'Docs',
+              to: '/docs',
             },
           ],
         },
@@ -111,16 +138,8 @@ const config: Config = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
+              label: 'Github',
+              href: organizationUrl,
             },
           ],
         },
@@ -132,19 +151,29 @@ const config: Config = {
               to: '/blog',
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              label: 'Contribute',
+              to: '/docs/contribute',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Fino, with akidoki.`,
     },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
+  stylesheets: [
+    'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=block',
+    'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=block'
+  ],
+  scripts: [
+      'https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js',
+      'https://buttons.github.io/buttons.js',
+      '/js/ribbons.js',
+      '/js/flowchart.js'
+  ]
 };
 
 export default config;
