@@ -11,7 +11,7 @@ const repoUrl = `https://github.com/${organizationName}/${projectName}`
 const organizationUrl = `https://github.com/${organizationName}`
 
 const config: Config = {
-  title: 'Fino',
+  title: 'fino',
   tagline: 'Financial data analysis tools',
   favicon: 'img/favicon.ico',
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -164,8 +164,8 @@ const config: Config = {
     },
   } satisfies Preset.ThemeConfig,
   stylesheets: [
-    'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&display=block',
-    'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=block'
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+    'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap'
   ],
   scripts: [
       'https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js',

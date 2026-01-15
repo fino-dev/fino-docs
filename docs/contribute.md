@@ -1,4 +1,4 @@
 ---
 id: contribute
-title: Welcome Fino Contributors!
+title: Welcome fino Contributors!
 ---
