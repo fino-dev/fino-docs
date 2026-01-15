@@ -1,4 +1,5 @@
 import type {ReactNode} from 'react';
+import {useState, useEffect} from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -10,18 +11,34 @@ import styles from './index.module.css';
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <Heading as="h1" className="hero__title">
+        <Heading 
+          as="h1" 
+          className={clsx('hero__title', styles.heroTitle, isLoaded && styles.fadeIn)}
+        >
           {siteConfig.title}
         </Heading>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
+        <p className={clsx('hero__subtitle', styles.heroSubtitle, isLoaded && styles.fadeInDelay1)}>
+          {siteConfig.tagline}
+        </p>
+        <div className={clsx(styles.buttons, isLoaded && styles.fadeInDelay2)}>
           <Link
-            className="button button--secondary button--lg"
-            to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            className={clsx('button button--secondary button--lg', styles.primaryButton)}
+            to="/docs/getting-started">
+            Get Started
+          </Link>
+          <Link
+            className={clsx('button button--outline button--secondary button--lg', styles.secondaryButton)}
+            to="/docs/docs">
+            View Documentation
           </Link>
         </div>
       </div>
