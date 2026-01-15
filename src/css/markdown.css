@@ -1,0 +1,19 @@
+.red {
+  color: #e5433d;
+  padding-left: 0.2em;
+}
+
+.smooth-red {
+  color: #cc4232;
+  padding-left: 0.2em;
+}
+
+.orange {
+  color: #fe703c;
+  padding-left: 0.2em;
+}
+
+.marker-yellow {
+  background: linear-gradient(transparent 60%, #fff3b0 60%);
+  padding-left: 0.2em;
+}

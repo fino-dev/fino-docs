@@ -5,6 +5,7 @@
  */
 
 @import './navbar.css';
+@import './markdown.css';
 /* You can override the default Infima variables here. */
 :root {
   --ifm-color-primary: #ff6b35;
