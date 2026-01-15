@@ -81,9 +81,8 @@ const config: Config = {
       defaultMode: 'dark',
       disableSwitch: false,
       respectPrefersColorScheme: true
-  },
+    },
     navbar: {
-
       logo: {
         alt: 'Fino Logo',
         src: 'img/logo-fino.svg',
@@ -104,8 +103,7 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          type: 'doc',
-          docId: "contribute",
+          to: "/contribute",
           position: 'left',
           label: 'Contribute',
         },
@@ -151,12 +149,17 @@ const config: Config = {
             },
             {
               label: 'Contribute',
-              to: '/docs/contribute',
+              to: '/contribute',
             },
           ],
         },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Fino, with akidoki.`,
+    },
+    docs: {
+      sidebar: {
+        hideable: false,
+      }
     },
     prism: {
       theme: prismThemes.github,
