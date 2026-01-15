@@ -4,27 +4,77 @@
  * work well for content-centric websites.
  */
 
+@import './navbar.css';
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #ff6b35;
+  --ifm-color-primary-dark: #ff5520;
+  --ifm-color-primary-darker: #ff4610;
+  --ifm-color-primary-darkest: #e63d0e;
+  --ifm-color-primary-light: #ff8150;
+  --ifm-color-primary-lighter: #ff9060;
+  --ifm-color-primary-lightest: #ffaa85;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  /* Background colors */
+  --ifm-background-color: #f4f4f4;
+  --ifm-background-surface-color: #f7f7f7;
+  /* Footer */
+  --ifm-footer-background-color: #f4f4f4;
+  --ifm-footer-color: #ff6b35;
+  --ifm-footer-link-color: #ff6b35;
+  --ifm-footer-link-hover-color: #ffaa85;
+  --ifm-footer-title-color: #1b1b1b;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary: #ef5d24;
+  --ifm-color-primary-dark: #ff7340;
+  --ifm-color-primary-darker: #ff6730;
+  --ifm-color-primary-darkest: #ff4a0a;
+  --ifm-color-primary-light: #ff976a;
+  --ifm-color-primary-lighter: #ffa37f;
+  --ifm-color-primary-lightest: #ffc1a9;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  /* Background colors */
+  --ifm-background-color: #101010;
+  --ifm-background-surface-color: #181818;
+  /* Footer */
+  --ifm-footer-background-color: #101010;
+  --ifm-footer-color: #ef5d24;
+  --ifm-footer-link-color: #ef5d24;
+  --ifm-footer-link-hover-color: #ff4a0a;
+  --ifm-footer-title-color: #ffffff;
+}
+
+/* Footer styles */
+.footer {
+  background-color: var(--ifm-footer-background-color);
+}
+
+.footer__title {
+  color: var(--ifm-footer-title-color);
+}
+
+.footer__item,
+.footer__link-item {
+  color: var(--ifm-footer-color);
+}
+
+.footer__link-item:hover {
+  color: var(--ifm-footer-link-hover-color);
+}
+
+.footer a {
+  color: var(--ifm-footer-link-color);
+}
+
+.footer a:hover {
+  color: var(--ifm-footer-link-hover-color);
+  text-decoration: none;
+}
+
+.footer__copyright {
+  color: var(--ifm-footer-color);
 }
