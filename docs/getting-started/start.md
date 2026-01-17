@@ -3,10 +3,55 @@ id: start
 title: Get Started
 displayed_sidebar: getting_started_sidebar
 ---
+
 # Getting Started with fino
 
-Welcome to fino! This guide will help you start managing financial data **from original sources** in less than 5 minutes.
+**fino** is an open-source library that helps you collect high-quality financial data  
+*directly from official disclosure sources* and load it into Python — reproducibly and transparently.
 
+This guide shows how to:
+- fetch real disclosure data
+- and load it as a DataFrame
+
+in just a few minutes.
+
+---
+
+## What is “Disclosure Data”? (30 seconds)
+
+Public companies are legally required to disclose financial information.
+
+Examples include:
+- annual reports (10-K, 有価証券報告書)
+- quarterly reports (10-Q, 決算短信)
+- timely disclosures (8-K, 適時開示)
+
+These documents are:
+- **official**
+- **free**
+- **publicly available**
+
+…but surprisingly hard to use.
+
+---
+
+## Why Is It Hard to Use Disclosure Data?
+
+If you try to use disclosure data *directly*, you usually need to:
+
+- find the correct filing system (SEC EDGAR, EDINET, etc.)
+- deal with different identifiers (ticker, CIK, security code)
+- download XBRL / HTML / ZIP files
+- understand different taxonomies
+- normalize dates, currencies, and labels
+- track corrections and re-filings
+
+Most individual investors give up here  
+—or rely on opaque third-party aggregators.
+
+**fino removes this friction.**
+
+---
 
 ## Installation
 
@@ -14,445 +59,154 @@ Welcome to fino! This guide will help you start managing financial data **from o
 pip install fino
 ```
 
-That's it! No API keys needed to get started with public data sources.
+No API keys are required for public disclosure data.
 
----
+:::info
+Some of Disclosures require Registoration or API KEYS. It depending on the Disclosure Services you want to use
 
-## Your First Data Pull: SEC EDGAR (30 seconds)
+Listed [here](/docs/docs/disclosure/disclosure.md) to describe what Disclosure is adopted by fino and what type of resoures is provided
+:::
+
+⸻
+
+Your First Data Pull (Less Than 1 Minute)
+
+Let’s fetch an official annual report and load it as a DataFrame.
+
+Example: Apple’s 10-K (SEC EDGAR)
 
 ```python
 import fino
 
-# Get Apple's latest 10-K filing from SEC EDGAR
-filing = fino.sec.get_filing("AAPL", form="10-K", latest=True)
+# Fetch Apple's latest annual filing from the SEC
+filing = fino.sec.get_filing(
+    symbol="AAPL",
+    form="10-K",
+    latest=True,
+    disclosure=fino.filing.DisclosureType.EDGER
+)
 
 # Extract financial statements
 financials = filing.extract_financials()
-print(financials.income_statement)
-print(financials.balance_sheet)
-print(financials.cash_flow)
+
+# Convert to pandas DataFrame
+df = financials.income_statement
+
+print(df.head())
 ```
 
-**What happened behind the scenes:**
-1. fino queried SEC EDGAR's official API at `https://data.sec.gov`
-2. Located Apple's latest 10-K filing using their CIK (Central Index Key)
-3. Downloaded the original XBRL data filed by Apple
-4. Parsed and standardized the financial statements
-5. Returned clean pandas DataFrames ready for analysis
+That’s it.
 
-🎉 **You just got official financial data directly from the SEC!**
+You are now working with official financial data filed by Apple to the SEC.
 
----
+⸻
 
-## Understanding the Source-First Approach
+***What Just Happened?***
 
-### Example: Market Data from Official Exchanges
+Behind the scenes:
+	1.	Connected to SEC EDGAR (the official U.S. disclosure system)
+	2.	Resolved Apple’s identifier (CIK)
+	3.	Downloaded the original filing data (XBRL)
+	4.	Parsed and normalized the financial statements
+	5.	Returned a clean, structured DataFrame
+
+All without:
+	•	scraping random websites
+	•	trusting unknown aggregators
+	•	manual preprocessing
+
+⸻
+
+Another Example: Japanese Disclosure (EDINET)
+
+The same idea works across markets.
 
 ```python
 import fino
 
-# Get market data directly from exchange sources
-# (Not from Yahoo Finance or other aggregators)
-
-# U.S. market data
-df = fino.market.get(
-    symbol="AAPL",
-    start="2020-01-01",
-    source="sec_splits"  # Official corporate actions from SEC filings
-)
-
-# Japanese market data from TDnet
-df = fino.market.get(
-    symbol="7203",  # Toyota
-    start="2020-01-01", 
-    source="tdnet",
-    market="jp"
-)
-```
-
-**Why this matters:**
-- Corporate actions (splits, dividends) come from official filings
-- No reliance on third-party adjustments
-- Full audit trail to original source
-
----
-
-## The fino Workflow: Source → Transform → Analyze
-
-fino handles the "Source" and "Transform" steps so you can focus on "Analyze":
-
-### Step 1: Source - Get Original Data
-
-```python
-import fino
-
-# Configure your data sources
-sources = fino.SourceRegistry()
-
-# U.S. companies: SEC EDGAR
-sources.register("sec", fino.sources.SECEDGAR(
-    user_agent="MyCompany research@mycompany.com"  # Required by SEC
-))
-
-# Japanese companies: TDnet
-sources.register("tdnet", fino.sources.TDnet(
-    # API key optional for basic access
-))
-
-# Now collect filings
-apple_10k = sources.get("sec").filing("AAPL", form="10-K", year=2023)
-toyota_kessan = sources.get("tdnet").filing("7203", form="決算短信", year=2023)
-```
-
-### Step 2: Transform - Standardize to Your Format
-
-```python
-from fino.transforms import FinancialStatementParser
-
-# Parse SEC XBRL format
-parser = FinancialStatementParser(format="xbrl")
-apple_data = parser.parse(apple_10k)
-
-# Parse Japanese XBRL format (different taxonomy)
-parser = FinancialStatementParser(format="xbrl-jp")
-toyota_data = parser.parse(toyota_kessan)
-
-# Both are now in standardized format!
-print(apple_data.revenue)   # Standardized field name
-print(toyota_data.revenue)  # Same field name, different source
-```
-
-### Step 3: Analyze - Use Standard Tools
-
-```python
-import pandas as pd
-import pandas_ta as ta
-
-# Now use standard analysis tools
-combined = pd.concat([apple_data.to_dataframe(), toyota_data.to_dataframe()])
-combined['rsi'] = ta.rsi(combined['close'])
-```
-
----
-
-## Working with SEC EDGAR
-
-The SEC provides free, comprehensive data. Here's how fino makes it easy:
-
-### Basic Filing Retrieval
-
-```python
-import fino
-
-# Get latest filing
-filing = fino.sec.get_filing("AAPL", form="10-K", latest=True)
-
-# Get specific year
-filing = fino.sec.get_filing("AAPL", form="10-Q", year=2023, quarter=3)
-
-# Get all filings of a type
-filings = fino.sec.get_filings("AAPL", form="8-K", start="2023-01-01")
-
-print(f"Found {len(filings)} 8-K filings")
-for filing in filings:
-    print(f"{filing.filing_date}: {filing.description}")
-```
-
-### Extracting Specific Sections
-
-```python
-# Extract Management Discussion & Analysis
-filing = fino.sec.get_filing("AAPL", form="10-K", latest=True)
-mda = filing.extract_section("7")  # Section 7 = MD&A
-
-# Extract Risk Factors
-risks = filing.extract_section("1A")  # Section 1A = Risk Factors
-
-# Get full text
-full_text = filing.full_text()
-```
-
-### Corporate Actions from SEC Filings
-
-```python
-# Get official corporate actions
-actions = fino.sec.get_corporate_actions("AAPL", start="2010-01-01")
-
-print(actions)
-# Output:
-#         date event_type  ratio  source
-# 0 2014-06-09      split    7:1  SC 13G/A filing
-# 1 2020-08-31      split    4:1  8-K filing
-# ...
-
-# These come directly from SEC filings, not third-party estimates!
-```
-
----
-
-## Working with TDnet (Japanese Market)
-
-For Japanese market data, fino connects to TDnet (適時開示情報伝達システム):
-
-```python
-import fino
-
-# Configure TDnet source
-tdnet = fino.sources.TDnet(
-    # Optional: API key for higher rate limits
-    # api_key="your_tdnet_api_key"
-)
-
-# Get 決算短信 (earnings summary)
-filing = tdnet.get_filing(
+# Fetch Toyota's earnings report (決算短信)
+filing = fino.edinet.get_filing(
     code="7203",  # Toyota
     form="決算短信",
-    fiscal_year=2023
+    fiscal_year=2023,
+    disclosure=fino.filing.DisclosureType.EDINET
 )
 
-# Extract financials from XBRL
 financials = filing.extract_financials()
+df = financials.income_statement
 
-# Get timely disclosure (適時開示)
-disclosures = tdnet.get_disclosures(
-    code="7203",
-    start="2023-01-01",
-    end="2023-12-31"
-)
+print(df.head())
 ```
 
-**What's different about TDnet:**
-- Uses XBRL with Japanese taxonomy (different from US GAAP)
-- Disclosure timing follows Japanese market calendar
-- fino handles the conversion to standard format
+Different country.
+Different language.
+Different taxonomy.
 
----
+Same Python workflow.
 
-## Building Your Data Pipeline
+⸻
 
-fino is designed to be modular. You combine only the pieces you need:
+Why This Matters
 
-```python
-import fino
+With fino:
+	•	You know where the data comes from
+	•	You know when it was disclosed
+	•	You can reproduce the same dataset later
+	•	You are not locked into any platform or vendor
 
-# Define what sources you care about
-pipeline = fino.Pipeline()
+This dramatically reduces the information gap between
+large organizations and individual investors.
 
-# Add SEC filings
-pipeline.add_source(
-    fino.sources.SECEDGAR(user_agent="research@mycompany.com"),
-    symbols=["AAPL", "GOOGL", "MSFT"],
-    forms=["10-K", "10-Q"]
-)
+⸻
 
-# Add Japanese market
-pipeline.add_source(
-    fino.sources.TDnet(),
-    codes=["7203", "6758"],  # Toyota, Sony
-    forms=["決算短信"]
-)
+What fino Focuses On (and What It Doesn’t)
 
-# Define transformations
-pipeline.add_transform(
-    fino.transforms.StandardizeFinancials(),
-    output_schema="common"  # Convert both to common schema
-)
+✅ fino focuses on:
+	•	collecting data from official disclosure sources
+	•	normalizing financial-specific concepts (time, identifiers, currency)
+	•	preserving lineage and reproducibility
+	•	giving you clean data for analysis
 
-# Execute pipeline
-pipeline.run(
-    start="2023-01-01",
-    storage="iceberg://my-warehouse"  # Optional: store results
-)
-```
+❌ fino does NOT:
+	•	tell you how to invest
+	•	provide trading strategies
+	•	replace pandas, Polars, or analytical libraries
+	•	enforce how you store or analyze data
 
----
+fino stops exactly where analysis begins.
 
-## Understanding Data Quality from Original Sources
+⸻
 
-One of fino's core features is validating data **against the original source**:
+Using the Data for Analysis
+
+Once you have a DataFrame, use any tools you like.
 
 ```python
-from fino.quality import SourceValidator
-
-# Validate that your data matches the original filing
-validator = SourceValidator()
-
-# Check if local data matches SEC filing
-report = validator.validate_against_source(
-    local_data=your_dataframe,
-    symbol="AAPL",
-    filing_date="2023-09-30",
-    source="sec"
-)
-
-if report.has_discrepancies():
-    print("Found differences from original source:")
-    for issue in report.discrepancies:
-        print(f"  {issue.field}: {issue.local_value} vs {issue.source_value}")
-```
-
----
-
-## Where Data is Stored
-
-fino gives you **full control** over where data goes:
-
-### Default: Local Cache
-
-```python
-# Default behavior: local Parquet files
-df = fino.sec.get_filing("AAPL", form="10-K")
-# Cached in: ~/.fino/cache/sec/AAPL/10-K/2023.parquet
-```
-
-### Recommended: Open Table Formats
-
-```python
-# Store in Iceberg (recommended for production)
-pipeline = fino.Pipeline(
-    storage=fino.storage.Iceberg("local://my-warehouse")
-)
-
-# Or Delta Lake
-pipeline = fino.Pipeline(
-    storage=fino.storage.DeltaLake("s3://my-bucket/delta")
-)
-```
-
-### Your Choice: Any Backend
-
-```python
-# You can use ANY storage you want
-pipeline = fino.Pipeline(
-    storage=fino.storage.PostgreSQL("postgresql://localhost/mydb")
-)
-
-# Or even custom storage
-class MyCustomStorage(fino.storage.Backend):
-    def write(self, data, **kwargs):
-        # Your custom logic
-        pass
-
-pipeline = fino.Pipeline(storage=MyCustomStorage())
-```
-
----
-
-## Next Steps
-
-Now that you understand fino's source-first philosophy, explore more:
-
-### 📚 **Deep Dives**
-- [SEC EDGAR Guide](./sources/sec-edgar.md) - Master all 150+ filing types
-- [TDnet Guide](./sources/tdnet.md) - Japanese market data guide
-- [Transform Pipeline](./guides/transform-pipeline.md) - Build custom transformations
-- [Data Quality](./guides/data-quality.md) - Validate against sources
-
-### 🔧 **Real-World Examples**
-- [Multi-Market Portfolio](./examples/multi-market-portfolio.md) - Track US + Japan stocks
-- [Financial Statement Analysis](./examples/financial-analysis.md) - Ratio analysis across markets
-- [Corporate Action Tracking](./examples/corporate-actions.md) - Monitor splits, dividends, M&A
-- [Regulatory Event Detection](./examples/event-detection.md) - Alert on 8-K filings
-
-### 🚀 **Production Setup**
-- [Scaling with Iceberg](./guides/iceberg-setup.md) - Handle millions of filings
-- [CI/CD Integration](./guides/cicd.md) - Automate data pipelines
-- [Rate Limit Management](./guides/rate-limits.md) - Respect SEC/TDnet limits
-
----
-
-## Getting Help
-
-- 📖 [Full Documentation](https://fino.readthedocs.io)
-- 💬 [GitHub Discussions](https://github.com/fino-project/fino/discussions)
-- 🐛 [Report Issues](https://github.com/fino-project/fino/issues)
-- 💡 [Feature Requests](https://github.com/fino-project/fino/issues/new?template=feature_request.md)
-
----
-
-## Philosophy in Practice
-
-fino follows three principles:
-
-### 1. **Original Sources First**
-We connect to SEC EDGAR, TDnet, and other official systems—not aggregators.
-
-**Example:** When you get Apple's revenue, it comes from the XBRL file Apple filed with the SEC, not a third-party database.
-
-### 2. **Transparent Transformations**
-Every transformation is explicit and auditable.
-
-**Example:** You can trace exactly how fino converted SEC XBRL to your final DataFrame.
-
-### 3. **User Control**
-We provide tools, not constraints.
-
-**Example:** fino works with Iceberg, Delta Lake, PostgreSQL, or anything else. Your choice.
-
----
-
-## What fino Does (and Doesn't Do)
-
-### ✅ **What fino Does**
-- Fetch filings from SEC EDGAR, TDnet, and other official sources
-- Parse XBRL, HTML, PDF from regulatory filings
-- Standardize financial statements across different taxonomies
-- Track corporate actions from official filings
-- Validate data against original sources
-- Handle symbol changes, delistings, M&A from official records
-
-### ❌ **What fino Doesn't Do** (Use these great tools instead)
-- **Technical indicators** → Use `pandas-ta`
-- **Backtesting** → Use `backtesting.py` or `zipline`
-- **Visualization** → Use `plotly` or `matplotlib`
-- **General analysis** → Use `pandas`
-- **Machine learning** → Use `scikit-learn` or `tensorflow`
-
-fino is the **layer that gets you reliable source data**. After that, use whatever tools you prefer for analysis.
-
----
-
-## Your First Real Analysis
-
-Let's combine fino with standard tools:
-
-```python
-import fino
 import pandas as pd
-import pandas_ta as ta
 
-# 1. Get data from original sources
-filings = fino.sec.get_filings("AAPL", form="10-Q", start="2020-01-01")
-financials = [f.extract_financials() for f in filings]
-
-# 2. Build DataFrame
-df = pd.DataFrame([
-    {
-        'date': f.filing_date,
-        'revenue': f.income_statement['Revenue'],
-        'net_income': f.income_statement['NetIncome'],
-        'eps': f.income_statement['EPS']
-    }
-    for f in financials
-])
-
-# 3. Analyze with standard tools
-df['revenue_growth'] = df['revenue'].pct_change()
-df['profit_margin'] = df['net_income'] / df['revenue']
-
-# 4. Visualize
-import plotly.express as px
-fig = px.line(df, x='date', y='revenue_growth', title='AAPL Revenue Growth')
-fig.show()
+df["profit_margin"] = df["net_income"] / df["revenue"]
+print(df[["revenue", "net_income", "profit_margin"]].head())
 ```
 
-**This is the fino way:**
-- Source data from SEC EDGAR ✅
-- Transform to analyzable format ✅
-- Use standard Python tools for everything else ✅
+fino works with the Python data ecosystem — not instead of it.
 
----
+⸻
 
-Happy analyzing with **data you can trust**! 📈
+What’s Next?
+	•	Learn more about SEC EDGAR￼
+	•	Explore Japanese disclosure data (EDINET)￼
+	•	See how fino tracks corrections and re-filings
+	•	Build your own data collection workflows
 
-**Remember:** With fino, you always know where your data came from, how it was transformed, and that it matches what the company actually filed.
+⸻
+
+Summary
+
+fino helps you start analysis from the same quality of data
+that institutions use — using only Python.
+
+No scraping.
+No black boxes.
+No guesswork.
+
+Just disclosure data, as it was actually published.

@@ -22,6 +22,7 @@ const sidebars: SidebarsConfig = {
   // Docs サイドバー
   docs_sidebar: [
     'docs',
+    'docs/disclosure/disclosure',
     // 必要に応じて docs 関連のドキュメントを追加
   ],
 };
