@@ -16,12 +16,13 @@ const sidebars: SidebarsConfig = {
   // Getting Started サイドバー
   getting_started_sidebar: [
     'getting-started',
-    // 必要に応じて getting-started 関連のドキュメントを追加
+    'getting-started/start',
   ],
 
   // Docs サイドバー
   docs_sidebar: [
     'docs',
+    'docs/disclosure/disclosure',
     // 必要に応じて docs 関連のドキュメントを追加
   ],
 };
