@@ -4,36 +4,99 @@ title: About fino
 displayed_sidebar: getting_started_sidebar
 ---
 
-<span className="orange">**fino**</span> is a ***Python-based open-source project*** for individuals who are interested in investing, financial data analysis, and data management.
 
-The goal of this project is to provide a practical and extensible foundation for working with financial information *~ including Tickers, Market data, News and Events etc.. ~* in a way that is transparent, flexible, and **developer-friendly.**
+## What is fino?
 
-Many existing financial tools and platforms are either closed, expensive, or tightly coupled to proprietary ecosystems. But fino is not.
+fino is an open-source Python library built on a simple philosophy:
 
-## Problems of Analyzing Financial Data
+> **Get data from original sources. Transform it once. Use it everywhere.**
 
-When working with financial data, you often face technical difficulties such as:
+We believe financial data should come directly from regulatory sources—not aggregators, not third-party APIs, but the actual disclosure systems that companies are legally required to use:
 
-- **<span className="smooth-red">Data Collection</span>** - collecting data in various formats from multiple sources using different methods, and parsing it for storage by building batches or pipelines
-- **<span className="smooth-red">Data Management</span>** - storing large-scale data and transforming it into meaningful, structured forms that support efficient querying for analysis
-- **<span className="smooth-red">Data Analysis</span>** - processing, exploring, and visualizing data to extract insights, trends, and actionable knowledge
+- 🇺🇸 **SEC EDGAR** for U.S. companies (10-K, 10-Q, 8-K filings)
+- 🇯🇵 **EDINET** for Japanese companies
+- 🇪🇺 **National disclosure systems** for European companies
+- 📊 **Exchange APIs** for market data
 
-fino will help you address these concerns.
+### Why Original Sources?
 
-:::warning
-⚠️ Most fino packages are currently under development. Implementations are evolving.
-:::
+**The Problem with Aggregators:**
+- Data modified from original format
+- Potential errors in transformation
+- Vendor lock-in and high costs
+- Inconsistent data quality
 
-## Packages
+**fino exists to close this gap.**
 
-### <span className="orange">fino-ingestor </span>
+**The fino Philosophy:**
+- ✅ **Transparency**: Know exactly where your data comes from
+- ✅ **Reliability**: Get data as companies filed it
+- ✅ **Control**: Transform data according to your needs
+- ✅ **Cost**: Original sources are often free or low-cost
 
-**fino-ingestor** focuses on the **Data Collection** layer.
 
-Its purpose is to provide a structured and extensible way to:
 
-- Retrieve disclosure documents from sources such as EDINET and EDGAR
-- Manage and store document files correctly
-- Ingest various data to Data Lakehouse Storage, which is the next layer
 
-More packages covering data management and analysis will be added as the project evolves.
+---
+
+## What fino Does
+
+fino provides a technology-native solution for high-quality financial data acquisition.
+
+It focuses on:
+
+- **Automated data collection** from public financial sources
+- **Normalization** of financial-specific concepts (time, identifiers, currency, markets)
+- **Validation and quality checks** to prevent silent data corruption
+- **Lineage and reproducibility**, so users can trace where data came from and when
+- **Composable outputs**, allowing users to export data in formats they prefer
+
+fino intentionally stays upstream of analysis and storage decisions.
+
+---
+
+## What fino Does NOT Do
+
+To remain flexible and widely usable, fino does **not**:
+
+- Enforce a specific data storage format or architecture
+- Dictate how users analyze or model financial data
+- Provide trading, execution, or investment advice
+- Act as a black-box data provider
+
+fino provides **capabilities**, not opinions about investment decisions.
+
+---
+
+## Design Philosophy
+
+fino is built on the following principles:
+
+- **Source-first**: Data acquisition starts from real-world financial sources
+- **Reproducibility as a feature**: Every dataset should be traceable and explainable
+- **Quality over convenience**: Correct data matters more than fast shortcuts
+- **Non-intrusive downstream**: Storage and analysis are user-controlled
+- **Transparency by default**: No hidden transformations or opaque logic
+
+---
+
+## The Goal of fino
+
+fino does not aim to make everyone a better trader.
+
+Its goal is simpler and more fundamental:
+
+> **To ensure that individuals and organizations start from the same quality of information.**
+
+What users build on top of that information is intentionally left to them.
+
+---
+
+## Open by Design
+
+fino is open-source and community-driven.
+
+New data sources, markets, and improvements are expected to come from contributors around the world.
+
+If financial data should be open, reproducible, and explainable,  
+fino aims to be the foundation that makes it possible.
